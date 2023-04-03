@@ -44,8 +44,7 @@ with dpg.value_registry():
     dpg.add_color_value(default_value=[random.randint(64, 191), random.randint(64, 191), random.randint(64, 191)], tag='colour_value')
     dpg.add_bool_value(default_value=True, tag='replace_flags_on_conflicts')
 
-dpg.add_file_dialog(directory_selector=True, show=False, callback=flags_dir_selector_callback, tag='flags_dir_browser',
-                    width=400, height=300)
+dpg.add_file_dialog(directory_selector=True, show=False, callback=flags_dir_selector_callback, tag='flags_dir_browser', width=400, height=300)
 
 #
 
@@ -134,24 +133,33 @@ def cosmetic_tag_window():
     dpg.delete_item('cosmetic_tag_window')
 
     with dpg.window(label='Create a new cosmetic tag', tag='cosmetic_tag_window', width=510, height=336, no_resize=True, no_collapse=True):
-        dpg.add_input_text(label='New cosmetic tag', source='cosmetic_tag', width=100)
-        dpg.add_button(label='Help', pos=[340, 28], callback=cosmetic_tags_help_window)
+        with dpg.group(horizontal=True):
+            dpg.add_input_text(label='New cosmetic tag', source='cosmetic_tag', parent='cosmetic_tag_div', width=100)
+            dpg.add_button(label='Help', parent='cosmetic_tag_div', callback=cosmetic_tags_help_window)
+
         dpg.add_separator()
-        dpg.add_text('Flags folder path')
-        dpg.add_input_text(tag='flags_folder_path_input_field', source='folder_with_cosmetic_flags', width=250)
-        dpg.add_button(label='Select', pos=[260, 80], callback=lambda: dpg.show_item('flags_dir_browser'))
-        dpg.add_button(label='Help', pos=[340, 80], callback=flags_help_window)
+
+        with dpg.group(horizontal=True):
+            dpg.add_input_text(label='Flags folder path', tag='flags_folder_path_input_field', source='folder_with_cosmetic_flags', width=250)
+            dpg.add_button(label='Select', callback=lambda: dpg.show_item('flags_dir_browser'))
+            dpg.add_button(label='Help', callback=flags_help_window)
+        dpg.add_checkbox(label='Replace flags on conflicts', source='replace_flags_on_conflicts')
+
         dpg.add_separator()
+
         dpg.add_color_picker(label='Colour of country on the map', no_alpha=True, source='colour_value', width=200)
+
         dpg.add_separator()
+
         dpg.add_input_text(label='Default name of the country', source='country_name', width=200)
         dpg.add_input_text(label='Adjective name of the country', source='adj_country_name', width=200)
         dpg.add_input_text(label='Name of the country, which will be used in events', source='events_country_name', width=200)
+
         dpg.add_separator()
-        dpg.add_text('Info: country names will be duplicated in all 4 vanilla ideologies.Country localization\n'
+
+        dpg.add_text('Info: country names will be duplicated in all 4 vanilla ideologies. Country localization\n'
                      'will be added only on applied language (localization/english/cosmetic_country_tags.yml).\n'
                      'File will be created if it does not exist || will be supplemented if exists')
-        dpg.add_checkbox(label='Replace flags on conflicts', source='replace_flags_on_conflicts')
         dpg.add_button(label='Submit', callback=create_cosmetic_tag)
 
 
